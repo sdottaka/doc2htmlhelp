@@ -110,6 +110,7 @@ Private Function EscapeHHCTitle(str)
     Dim tmp, tmp2
 
     tmp = Replace(str, "&nbsp;", " ")
+    tmp = Replace(str, Chr(&HA0), " ")
 
     Do
         tmp2 = tmp
@@ -241,6 +242,15 @@ Private Function OpenWordFileAndResolveUnspecifiedParameters(Params)
 End Function
 
 Private Sub SaveAsHTMLFileAndClose(doc, HTMLFileName)
+    Dim obj
+    For Each obj In doc.Comments
+        obj.Delete
+    Next
+    For Each obj In doc.Revisions
+        obj.Accept
+    Next
+    Set obj = Nothing
+
     Dim WordVersion: WordVersion = doc.Application.Version
     If WordVersion <= 9 Then
         doc.SaveAs HTMLFileName, wdFormatHTML
@@ -541,7 +551,6 @@ Private Sub SplitHTML(HTMLFileName, Params, MaxTocLevel, dicHTMLFiles, dicTocLin
             HTMLHeadingTag = TagText
             PosHeadingTag = PosLt
             CurTitle = ""
-            dicCurLinkId.RemoveAll
             ParsingHeading = True
         ElseIf RETest(TagText, "^</h\d.*") Or TagText = "</p>" Then
             If ParsingHeading Then
@@ -640,14 +649,15 @@ Private Sub SplitHTML(HTMLFileName, Params, MaxTocLevel, dicHTMLFiles, dicTocLin
                     If DocLevel <= Params.DivisionLevel Then
                         CurHTMLTitle = CurTitle
                     End If
+
+                    dicCurLinkId.RemoveAll
+
                 End If
                 ParsingHeading = False
             End If
-        ElseIf RETest(TagText, "^<a\s+.*name=""_Toc\d+") Then
-            If ParsingHeading Then
-                Dim Id: Id = REMatches(TagText, "name=""(_Toc\d+)")(0).SubMatches(0)
-                dicCurLinkId.Add dicCurLinkId.Count, Id
-            End If
+        ElseIf RETest(TagText, "^<a\s+.*name=""_[^""]+""") Then
+            Dim Id: Id = REMatches(TagText, "name=""(_[^""]+)""")(0).SubMatches(0)
+            dicCurLinkId.Add dicCurLinkId.Count, Id
         End If
         
         If PosGt = 0 Or PosGt = Len(HTMLText) Then
@@ -678,9 +688,9 @@ Private Sub ReplaceTocLink(dicHTMLFiles, dicTocLink, Charset)
         Dim os: Set os = GetStream(Charset)
         Do While Not s.EOS
             Dim htmlLine: htmlLine = s.ReadText(adReadLine)
-            If RETest(htmlLine, "href=""#_Toc\d+") Then
+            If RETest(htmlLine, "href=""#_[^""]+""") Then
                 Dim Id, m
-                For Each m In REMatches(htmlLine, "href=""#(_Toc\d+)")
+                For Each m In REMatches(htmlLine, "href=""#(_[^""]+)""")
                     Id = m.SubMatches(0) 
                     htmlLine = Replace(htmlLine, "#" & Id, dicTocLink.Item(Id)) 
                 Next
