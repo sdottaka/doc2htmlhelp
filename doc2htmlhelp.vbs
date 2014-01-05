@@ -28,6 +28,11 @@ Const wdDialogFileOpen = 80
 Const wdFormatHTML = 8
 Const wdFormatFilteredHTML = 10
 
+Const adReadAll = -1
+Const adReadLine = -2
+Const adWriteLine = 1
+Const adSaveCreateOverWrite = 2
+
 Class Parameters
     Public WordDocFileName
     Public DestDir
@@ -56,6 +61,33 @@ Class TocItem
         Set Child = Nothing
     End Sub
 End Class
+
+Private Function GetStreamFromFile(FileName, Charset)
+    Dim s: Set s = CreateObject("ADODB.Stream")
+    s.Type = 2
+    If IsEmpty(Charset) Then
+        s.Charset = "_autodetect"
+    Else
+        s.Charset = Charset
+    End If
+    s.Open
+    s.LoadFromFile(FileName)
+    Charset = s.Charset
+    Set GetStreamFromFile = s
+End Function
+
+Private Function GetStream(Charset)
+    Dim s: Set s = CreateObject("ADODB.Stream")
+    s.Type = 2
+    If IsEmpty(Charset) Then
+        s.Charset = "shift_jis"
+    Else
+        s.Charset = Charset
+    End If
+    s.Open
+    Charset = s.Charset
+    Set GetStream = s
+End Function
 
 Dim g_regexp: Set g_regexp = CreateObject("VBScript.RegExp")
 Private Function RETest(str, Pattern)
@@ -112,32 +144,21 @@ Private Function EscapeHHCTitle(str)
     EscapeHHCTitle = Trim(tmp2)
 End Function
 
-Private Sub SafeReadAllFile(FileName, Text)
-    Dim fso: Set fso = CreateObject("Scripting.FileSystemObject")
-
-    Dim fi: Set fi = fso.OpenTextFile(FileName, 1, False, False)
-    Text = fi.ReadAll()
-    fi.Close
-
-    If InStr(Text, Chr(0)) > 0 Then
-        Dim TempFileName
-        TempFileName = WScript.CreateObject("WScript.Shell").ExpandEnvironmentStrings("%TEMP%\" & fso.GetFileName(FileName) & ".tmp")
-
-        Set fi = fso.OpenTextFile(FileName, 1, False, False)
-        Dim fo: Set fo = fso.CreateTextFile(TempFileName, True, False)
-        Do While Not fi.AtEndOfStream
-            fo.WriteLine Replace(fi.ReadLine(), Chr(0), "")
-        Loop
-        fo.Close
-        fi.Close
-
-        Set fi = fso.OpenTextFile(TempFileName, 1, False, False)
-        Text = fi.ReadAll()
-        fi.Close
-
-        fso.DeleteFile TempFileName
+Private Function ReadAllFile(FileName, Text, ByVal Charset)
+    If IsEmpty(Charset) Then
+        Charset = "_autodetect"
     End If
-End Sub
+    Dim s: Set s = GetStreamFromFile(FileName, Charset)
+    Text = s.ReadText(adReadAll)
+    s.Close
+    If Charset <> "utf-8" And InStr(Text, "; charset=utf-8"">") > 0 Then
+        Charset = "utf-8"
+        Set s = GetStreamFromFile(FileName, Charset)
+        Text = s.ReadText(adReadAll)
+        s.Close
+    End If
+    ReadAllFile = Charset
+End Function
 
 Private Function OpenWordFileAndResolveUnspecifiedParameters(Params)
     Set OpenWordFileAndResolveUnspecifiedParameters = Nothing
@@ -185,6 +206,7 @@ Private Function OpenWordFileAndResolveUnspecifiedParameters(Params)
     If Params.DestDir = "" Then
         Params.DestDir = fso.GetParentFolderName(Params.WordDocFileName) & "\" & fso.GetBaseName(doc.name)
     End If
+    Params.DestDir = fso.GetAbsolutePathName(Params.DestDir)
     If Not fso.FolderExists(Params.DestDir) Then
         On Error Resume Next
         fso.CreateFolder Params.DestDir
@@ -232,12 +254,11 @@ Private Sub SaveAsHTMLFileAndClose(doc, HTMLFileName)
 End Sub
 
 Private Sub MSOfficeFilter(HTMLFileName)
-    Dim fso: Set fso = CreateObject("Scripting.FileSystemObject")
+    Dim HTMLText, Charset
 
-    Dim HTMLText
-    SafeReadAllFile HTMLFileName, HTMLText
+    Charset = ReadAllFile(HTMLFileName, HTMLText, "_autodetect")
 
-    Dim fo: Set fo = fso.CreateTextFile(HTMLFileName, True, False)
+    Dim os: Set os = GetStream(Charset)
 
     Dim InConditionalComments: InConditionalComments = 0
     Dim PosLt, PosGt, PosText
@@ -252,12 +273,12 @@ Private Sub MSOfficeFilter(HTMLFileName)
             TagText = Mid(HTMLText, PosLt, PosGt + 1 - PosLt)
         End if
         If InStr(TagText, "<html") = 1 Then
-            fo.Write "<html>"
+            os.WriteText "<html>", adWriteLine
         ElseIf InStr(TagText, "<link") = 1 Then
             '
         ElseIf InStr(TagText, "<meta") = 1 Then
             If InStr(TagText, "name=ProgId") = 0 Then
-                fo.Write TagText
+                os.WriteText TagText, adWriteLine
             End If
         ElseIf InStr(TagText, "<!--[if") = 1 Then
             InConditionalComments = InConditionalComments + 1
@@ -291,7 +312,7 @@ Private Sub MSOfficeFilter(HTMLFileName)
                     TagText = Left(TagText, PosMso - 1) & Mid(TagText, PosSc + 1)
                 Loop
             End If
-            fo.Write TagText
+            os.WriteText TagText, adWriteLine
         ElseIf InStr(TagText, "<o:p>") Or InStr(TagText, "</o:p>") = 1 Then
             '
         Else
@@ -316,7 +337,7 @@ Private Sub MSOfficeFilter(HTMLFileName)
                     TagText = Replace(TagText, " style=''", "")
                     TagText = Replace(TagText, "style=''", "")
                 End If
-                fo.Write TagText
+                os.WriteText TagText, adWriteLine
             End If
         End If
         If PosGt = 0 Or PosGt = Len(HTMLText) Then
@@ -332,19 +353,20 @@ Private Sub MSOfficeFilter(HTMLFileName)
             Text = Mid(HTMLText, PosText, PosLt - PosText)
         End If
         If InConditionalComments = 0 Then
-            fo.Write Text
+            os.WriteText Text, adWriteLine
         End If
         If PosLt = 0 Or PosLt = Len(HTMLText) Then
             Exit Do
         End If
 
     Loop
-    fo.Close
+    os.SaveToFile HTMLFileName, adSaveCreateOverWrite
+    os.Close
 End Sub
 
-Private Sub SplitHTML(HTMLFileName, Params, MaxTocLevel, dicHTMLFiles, dicTocLink, dicTocTree)
+Private Sub SplitHTML(HTMLFileName, Params, MaxTocLevel, dicHTMLFiles, dicTocLink, dicTocTree, Charset)
     Dim HTMLText
-    SafeReadAllFile HTMLFileName, HTMLText
+    Charset = ReadAllFile(HTMLFileName, HTMLText, "_autodetect")
 
     Dim TopHTMLFileName
     Dim HTMLHeadBlock: HTMLHeadBlock = ""
@@ -444,6 +466,7 @@ Private Sub SplitHTML(HTMLFileName, Params, MaxTocLevel, dicHTMLFiles, dicTocLin
     Dim PosMarkStart, PosMarkEnd
     Dim PosHeadingTag 
     Dim i
+    Dim os
 
     MaxTocLevel = 0
 
@@ -479,27 +502,28 @@ Private Sub SplitHTML(HTMLFileName, Params, MaxTocLevel, dicHTMLFiles, dicTocLin
             PosMarkStart = PosGt + 1
         ElseIf TagText = "</body>" Then
             dicHTMLFiles.Add dicHTMLFiles.Count, CurOutputFileName
-            Set fo = fso.CreateTextFile(CurOutputFileName, True, False)
-            fo.WriteLine "<html>"
-            fo.WriteLine "<head>"
-            fo.Write HTMLHeadBlock
-            fo.WriteLine "<title>" & EscapeHHCTitle(CurHTMLTitle) & "</title>"
-            fo.WriteLine "</head>"
-            fo.WriteLine HTMLBodyTag
+            Set os = GetStream(Charset)
+            os.WriteText "<html>", adWriteLine
+            os.WriteText "<head>", adWriteLine
+            os.WriteText HTMLHeadBlock, adWriteLine
+            os.WriteText "<title>" & EscapeHHCTitle(CurHTMLTitle) & "</title>", adWriteLine
+            os.WriteText "</head>", adWriteLine
+            os.WriteText HTMLBodyTag, adWriteLine
             If Params.MarginLeft > 0 Then
-                fo.WriteLine "<div style='margin-left:" & Params.MarginLeft & "px'>"
+                os.WriteText "<div style='margin-left:" & Params.MarginLeft & "px'>", adWriteLine
             End If
             For i = 0 To dicSavedHTMLParentTag.Count - 1
-                fo.WriteLine dicSavedHTMLParentTag.Item(i)
+                os.WriteText dicSavedHTMLParentTag.Item(i), adWriteLine
             Next
             PosMarkEnd = PosLt
-            fo.Write Mid(HTMLText, PosMarkStart, PosMarkEnd - PosMarkStart)
+            os.WriteText Mid(HTMLText, PosMarkStart, PosMarkEnd - PosMarkStart), adWriteLine
             If Params.MarginLeft > 0 Then
-                fo.WriteLine "</div>"
+                os.WriteText "</div>", adWriteLine
             End If
-            fo.WriteLine "</body>"
-            fo.WriteLine "</html>"
-            fo.Close
+            os.WriteText "</body>", adWriteLine
+            os.WriteText "</html>", adWriteLine
+            os.SaveToFile CurOutputFileName, adSaveCreateOverWrite
+            os.Close
 
             Exit Do
         ElseIf RETest(TagText, "^<(div|table|tr|td).*") Then
@@ -544,18 +568,18 @@ Private Sub SplitHTML(HTMLFileName, Params, MaxTocLevel, dicHTMLFiles, dicTocLin
                     Next
                     If DocLevel <= Params.DivisionLevel Then
                         dicHTMLFiles.Add dicHTMLFiles.Count, CurOutputFileName
-                        Set fo = fso.CreateTextFile(CurOutputFileName, True, False)
-                        fo.WriteLine "<html>"
-                        fo.WriteLine "<head>"
-                        fo.Write HTMLHeadBlock
-                        fo.WriteLine "<title>" & EscapeHHCTitle(CurHTMLTitle) & "</title>"
-                        fo.WriteLine "</head>"
-                        fo.WriteLine HTMLBodyTag
+                        Set os = GetStream(Charset)
+                        os.WriteText "<html>", adWriteLine
+                        os.WriteText "<head>", adWriteLine
+                        os.WriteText HTMLHeadBlock, adWriteLine
+                        os.WriteText "<title>" & EscapeHHCTitle(CurHTMLTitle) & "</title>", adWriteLine
+                        os.WriteText "</head>", adWriteLine
+                        os.WriteText HTMLBodyTag, adWriteLine
                         If Params.MarginLeft > 0 Then
-                            fo.WriteLine "<div style='margin-left:" & Params.MarginLeft & "px'>"
+                            os.WriteText "<div style='margin-left:" & Params.MarginLeft & "px'>", adWriteLine
                         End If
                         For i = 0 To dicSavedHTMLParentTag.Count - 1
-                            fo.WriteLine dicSavedHTMLParentTag.Item(i)
+                            os.WriteText dicSavedHTMLParentTag.Item(i), adWriteLine
                         Next
                         PosMarkEnd = PosHeadingTag
                         For i = dicHTMLParentTag.Count - 1 To 0 Step -1
@@ -564,9 +588,9 @@ Private Sub SplitHTML(HTMLFileName, Params, MaxTocLevel, dicHTMLFiles, dicTocLin
                             End If
                             PosMarkEnd = dicHTMLParentTagPos.Item(i)
                         Next
-                        fo.Write Mid(HTMLText, PosMarkStart, PosMarkEnd - PosMarkStart)
+                        os.WriteText Mid(HTMLText, PosMarkStart, PosMarkEnd - PosMarkStart), adWriteLine
                         For i = dicSavedHTMLParentTag.Count - 1 To 0 Step -1
-                            fo.WriteLine "</" & REMatches(dicSavedHTMLParentTag.Item(i), "^<(\w+).*")(0).SubMatches(0) & ">"
+                            os.WriteText "</" & REMatches(dicSavedHTMLParentTag.Item(i), "^<(\w+).*")(0).SubMatches(0) & ">", adWriteLine
                         Next
                         dicSavedHTMLParentTag.RemoveAll
                         For i = 0 To dicHTMLParentTag.Count - 1
@@ -576,11 +600,12 @@ Private Sub SplitHTML(HTMLFileName, Params, MaxTocLevel, dicHTMLFiles, dicTocLin
                             dicSavedHTMLParentTag.Add i, dicHTMLParentTag.Item(i)
                         Next
                         If Params.MarginLeft > 0 Then
-                            fo.WriteLine "</div>"
+                            os.WriteText "</div>", adWriteLine
                         End If
-                        fo.WriteLine "</body>"
-                        fo.WriteLine "</html>"
-                        fo.Close
+                        os.WriteText "</body>", adWriteLine
+                        os.WriteText "</html>", adWriteLine
+                        os.SaveToFile CurOutputFileName, adSaveCreateOverWrite
+                        os.Close
 
                         PosMarkStart = PosMarkEnd
 
@@ -646,14 +671,13 @@ Private Sub SplitHTML(HTMLFileName, Params, MaxTocLevel, dicHTMLFiles, dicTocLin
     Loop
 End Sub
 
-Private Sub ReplaceTocLink(dicHTMLFiles, dicTocLink)
+Private Sub ReplaceTocLink(dicHTMLFiles, dicTocLink, Charset)
     Dim FileName
-    Dim fso: Set fso = CreateObject("Scripting.FileSystemObject")
     For Each FileName In dicHTMLFiles.Items
-        Dim fi: Set fi = fso.OpenTextFile(FileName, 1, False, False)
-        Dim fo: Set fo = fso.CreateTextFile(FileName & ".tmp", True, False)
-        Do While Not fi.AtEndOfStream
-            Dim htmlLine: htmlLine = fi.ReadLine()
+        Dim s: Set s = GetStreamFromFile(FileName, Charset)
+        Dim os: Set os = GetStream(Charset)
+        Do While Not s.EOS
+            Dim htmlLine: htmlLine = s.ReadText(adReadLine)
             If RETest(htmlLine, "href=""#_Toc\d+") Then
                 Dim Id, m
                 For Each m In REMatches(htmlLine, "href=""#(_Toc\d+)")
@@ -661,13 +685,11 @@ Private Sub ReplaceTocLink(dicHTMLFiles, dicTocLink)
                     htmlLine = Replace(htmlLine, "#" & Id, dicTocLink.Item(Id)) 
                 Next
             End If
-            fo.WriteLine htmlLine
+            os.WriteText htmlLine, adWriteLine
         Loop
-        fo.Close
-        fi.Close
-
-        fso.DeleteFile FileName
-        fso.MoveFile FileName & ".tmp", FileName
+        s.Close
+        os.SaveToFile FileName, adSaveCreateOverWrite
+        os.Close
     Next
 End Sub
 
@@ -784,10 +806,11 @@ Private Sub ConvertWordDocToHTMLHelp(Params)
     Dim dicHTMLFiles: Set dicHTMLFiles = CreateObject("Scripting.Dictionary")
     Dim dicTocLink: Set dicTocLink = CreateObject("Scripting.Dictionary")
     Dim dicTocTree: Set dicTocTree = CreateObject("Scripting.Dictionary")
-    SplitHTML TempHTMLFileName, Params, MaxTocLevel, dicHTMLFiles, dicTocLink, dicTocTree
+    Dim Charset
+    SplitHTML TempHTMLFileName, Params, MaxTocLevel, dicHTMLFiles, dicTocLink, dicTocTree, Charset
     
     WriteConsole "*** 目次のリンクを書き換えています"
-    ReplaceTocLink dicHTMLFiles, dicTocLink
+    ReplaceTocLink dicHTMLFiles, dicTocLink, Charset
        
     WriteConsole "*** HTML Help Project ファイルを生成しています"
     CreateHHP Params.DestDir & "\" & fso.GetBaseName(Params.WordDocFileName) & ".hhp", dicHTMLFiles(0), Params.CHMTitle

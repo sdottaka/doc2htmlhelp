@@ -1,4 +1,4 @@
-doc2htmlhelp.vbs Version 1.0
+doc2htmlhelp.vbs Version 1.1
 
 [目的]
   WordドキュメントからMicrosoft HTML Help 形式のヘルプファイル (.chm)を
@@ -75,6 +75,7 @@ doc2htmlhelp.vbs Version 1.0
   http://www.opensource.org/licenses/mit-license.php
 
 [履歴]
+  2008-05-30 1.1 HTMLファイルがUTF-8で出力された場合、目次等が文字化けしてしまう問題の修正
   2008-05-17 1.0 初回リリース
 
 [連絡先]
