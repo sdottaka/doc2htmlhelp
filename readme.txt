@@ -1,4 +1,4 @@
-doc2htmlhelp.vbs Version 1.1
+doc2htmlhelp.vbs Version 1.2
 
 [目的]
   WordドキュメントからMicrosoft HTML Help 形式のヘルプファイル (.chm)を
@@ -11,7 +11,7 @@ doc2htmlhelp.vbs Version 1.1
   作者は上記の環境で確認していますが、Windows 98, 2000等でも動くと思います。
 
 [必要なソフトウェア]
-・Microsoft Word (2000, XP, 2003, 2007)
+・Microsoft Word (2000, XP, 2003, 2007, 2010)
 
 ・Microsoft HTML Help Workshop 
   (以下のMicrosoftのサイトから無料でダウンロードできます)
@@ -75,6 +75,8 @@ doc2htmlhelp.vbs Version 1.1
   http://www.opensource.org/licenses/mit-license.php
 
 [履歴]
+  2011-02-27 1.2 Word2010環境でコマンドラインオプションの/DivDocLevelを使用した場合に
+                 正しくHTMLHelpが生成されない問題の修正
   2008-05-30 1.1 HTMLファイルがUTF-8で出力された場合、目次等が文字化けしてしまう問題の修正
   2008-05-17 1.0 初回リリース
 

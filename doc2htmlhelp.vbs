@@ -1,7 +1,7 @@
 ' vim:set sw=4 ts=4 expandtab:
 'The MIT License
 '
-'Copyright (c) 2008 s7taka@gmail.com
+'Copyright (c) 2008-2011 s7taka@gmail.com
 '
 'Permission is hereby granted, free of charge, to any person obtaining a copy
 'of this software and associated documentation files (the "Software"), to deal
@@ -583,7 +583,7 @@ Private Sub SplitHTML(HTMLFileName, Params, MaxTocLevel, dicHTMLFiles, dicTocLin
                         Next
                         PosMarkEnd = PosHeadingTag
                         For i = dicHTMLParentTag.Count - 1 To 0 Step -1
-                            If InStr(dicHTMLParentTag.Item(i), "class=Section") > 0 Then
+                            If InStr(dicHTMLParentTag.Item(i), "class=Section") > 0 Or InStr(dicHTMLParentTag.Item(i), "class=WordSection") > 0 Then
                                 Exit For
                             End If
                             PosMarkEnd = dicHTMLParentTagPos.Item(i)
@@ -594,7 +594,7 @@ Private Sub SplitHTML(HTMLFileName, Params, MaxTocLevel, dicHTMLFiles, dicTocLin
                         Next
                         dicSavedHTMLParentTag.RemoveAll
                         For i = 0 To dicHTMLParentTag.Count - 1
-                            If InStr(dicHTMLParentTag.Item(i), "class=Section") = 0 Then
+                            If InStr(dicHTMLParentTag.Item(i), "class=Section") = 0 And InStr(dicHTMLParentTag.Item(i), "class=WordSection") = 0 Then
                                 Exit For
                             End If
                             dicSavedHTMLParentTag.Add i, dicHTMLParentTag.Item(i)
