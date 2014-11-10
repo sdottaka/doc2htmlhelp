@@ -1,7 +1,7 @@
 ' vim:set sw=4 ts=4 expandtab:
 'The MIT License
 '
-'Copyright (c) 2008-2011 s7taka@gmail.com
+'Copyright (c) 2008-2014 s7taka@gmail.com
 '
 'Permission is hereby granted, free of charge, to any person obtaining a copy
 'of this software and associated documentation files (the "Software"), to deal
@@ -106,11 +106,37 @@ Private Sub WriteConsole(str)
     End If
 End Sub
 
+Private Function RemoveUnconvertableChars(str)
+    Dim fso, fo, tmppath, ret, ch, i
+
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    tmppath = fso.BuildPath(fso.GetSpecialFolder(2), "__doc2htmlhelp_tmp__.txt")
+    Set fo  = fso.CreateTextFile(tmppath, True)
+
+    ret = ""
+    On Error Resume Next
+    For i = 1 To Len(str)
+        Err.Clear
+        ch = Mid(str, i, 1)
+        fo.Write ch
+        If Err.Number <> 0 Then
+            ret = ret & "?"
+        Else
+            ret = ret & ch
+        End If
+    Next
+    fo.Close
+    Set fo = Nothing
+    Set fso = Nothing
+    fso.DeleteFile tmppath
+    RemoveUnconvertableChars = ret
+End Function
+
 Private Function EscapeHHCTitle(str)
     Dim tmp, tmp2
 
     tmp = Replace(str, "&nbsp;", " ")
-    tmp = Replace(str, Chr(&HA0), " ")
+    tmp = Replace(tmp, Chr(&HA0), " ")
 
     Do
         tmp2 = tmp
@@ -128,21 +154,20 @@ Private Function EscapeHHCTitle(str)
             If Mid(tmp, i, 2) = "&#" Then
                 Dim PosSC: PosSC = InStr(i, tmp, ";")
                 If PosSC > 0 Then
-                    ch = ChrW(Mid(tmp, i + 2, PosSC - (i + 2)))
+                    Dim code: code = CLng(Mid(tmp, i + 2, PosSC - (i + 2)))
+                    If code < &H10000 Then
+                        ch = ChrW(code)
+                    Else
+                        ch = ChrW((code \ &H400) + &HD800) & ChrW((code Mod &H400) + &HDC00)
+                    End If
                     i = PosSC
                 End If
             End If
             tmp2 = tmp2 & ch
         End If
     Next
-    tmp = tmp2
 
-    tmp2 = ""
-    For i = 1 To Len(tmp)
-        tmp2 = tmp2 & Chr(Asc(Mid(tmp, i, 1)))
-    Next
-
-    EscapeHHCTitle = Trim(tmp2)
+    EscapeHHCTitle = Trim(RemoveUnconvertableChars(tmp2))
 End Function
 
 Private Function ReadAllFile(FileName, Text, ByVal Charset)
