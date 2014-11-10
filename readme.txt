@@ -1,85 +1,85 @@
 doc2htmlhelp.vbs Version 1.2
 
-[–Ú“I]
-  WordƒhƒLƒ…ƒƒ“ƒg‚©‚çMicrosoft HTML Help Œ`Ž®‚Ìƒwƒ‹ƒvƒtƒ@ƒCƒ‹ (.chm)‚ð
-  ì¬‚·‚éƒ\ƒtƒgƒEƒFƒA‚Å‚·BVBScript‚Å‹Lq‚³‚ê‚Ä‚¢‚Ü‚·B
-  •ÏŠ·Œ³‚ÌWordƒhƒLƒ…ƒƒ“ƒg‚É–ÚŽŸ‚ª‚ ‚ê‚ÎA¶¬‚³‚ê‚é HTML Help‚É‚à–ÚŽŸ‚ª
-  ì¬‚³‚ê‚Ü‚·B
+[ç›®çš„]
+  Wordãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã‹ã‚‰Microsoft HTML Help å½¢å¼ã®ãƒ˜ãƒ«ãƒ—ãƒ•ã‚¡ã‚¤ãƒ« (.chm)ã‚’
+  ä½œæˆã™ã‚‹ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ã§ã™ã€‚VBScriptã§è¨˜è¿°ã•ã‚Œã¦ã„ã¾ã™ã€‚
+  å¤‰æ›å…ƒã®Wordãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã«ç›®æ¬¡ãŒã‚ã‚Œã°ã€ç”Ÿæˆã•ã‚Œã‚‹ HTML Helpã«ã‚‚ç›®æ¬¡ãŒ
+  ä½œæˆã•ã‚Œã¾ã™ã€‚
 
-[‘Î‰žOS]
-EWindows XP, Vista
-  ìŽÒ‚Íã‹L‚ÌŠÂ‹«‚ÅŠm”F‚µ‚Ä‚¢‚Ü‚·‚ªAWindows 98, 2000“™‚Å‚à“®‚­‚ÆŽv‚¢‚Ü‚·B
+[å¯¾å¿œOS]
+ãƒ»Windows XP, Vista
+  ä½œè€…ã¯ä¸Šè¨˜ã®ç’°å¢ƒã§ç¢ºèªã—ã¦ã„ã¾ã™ãŒã€Windows 98, 2000ç­‰ã§ã‚‚å‹•ãã¨æ€ã„ã¾ã™ã€‚
 
-[•K—v‚Èƒ\ƒtƒgƒEƒFƒA]
-EMicrosoft Word (2000, XP, 2003, 2007, 2010)
+[å¿…è¦ãªã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢]
+ãƒ»Microsoft Word (2000, XP, 2003, 2007, 2010)
 
-EMicrosoft HTML Help Workshop 
-  (ˆÈ‰º‚ÌMicrosoft‚ÌƒTƒCƒg‚©‚ç–³—¿‚Åƒ_ƒEƒ“ƒ[ƒh‚Å‚«‚Ü‚·)
+ãƒ»Microsoft HTML Help Workshop 
+  (ä»¥ä¸‹ã®Microsoftã®ã‚µã‚¤ãƒˆã‹ã‚‰ç„¡æ–™ã§ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã§ãã¾ã™)
   http://www.microsoft.com/japan/office/ork/appndx/appa06.mspx
-  ‚Ìhtmlhelp.exe‚ÌƒŠƒ“ƒN‚ðƒNƒŠƒbƒN‚µ‚Ä‚­‚¾‚³‚¢B
+  ã®htmlhelp.exeã®ãƒªãƒ³ã‚¯ã‚’ã‚¯ãƒªãƒƒã‚¯ã—ã¦ãã ã•ã„ã€‚
 
-[Žg‚¢•û]
-EŠÈ’P‚ÈŽg‚¢•û
+[ä½¿ã„æ–¹]
+ãƒ»ç°¡å˜ãªä½¿ã„æ–¹
 
-  “WŠJ‚³‚ê‚½ doc2htmlhelp.vbs‚Ìã‚ÉA•ÏŠ·‚µ‚½‚¢Word ƒtƒ@ƒCƒ‹‚ðƒhƒ‰ƒbƒO•
-  ƒhƒƒbƒv‚·‚é‚©Adoc2htmlhelp.vbs‚ðƒ_ƒuƒ‹ƒNƒŠƒbƒN‚µAWord‚Ì[ƒtƒ@ƒCƒ‹‚ðŠJ‚­]
-  ƒEƒCƒ“ƒhƒE‚É‚Ä•ÏŠ·‚µ‚½Wordƒtƒ@ƒCƒ‹‚ðŽw’è‚µ‚Ä‚­‚¾‚³‚¢B
+  å±•é–‹ã•ã‚ŒãŸ doc2htmlhelp.vbsã®ä¸Šã«ã€å¤‰æ›ã—ãŸã„Word ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒ‰ãƒ©ãƒƒã‚°ï¼†
+  ãƒ‰ãƒ­ãƒƒãƒ—ã™ã‚‹ã‹ã€doc2htmlhelp.vbsã‚’ãƒ€ãƒ–ãƒ«ã‚¯ãƒªãƒƒã‚¯ã—ã€Wordã®[ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã]
+  ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã«ã¦å¤‰æ›ã—ãŸã„Wordãƒ•ã‚¡ã‚¤ãƒ«ã‚’æŒ‡å®šã—ã¦ãã ã•ã„ã€‚
 
-  ‚µ‚Î‚ç‚­‚·‚é‚ÆA•ÏŠ·‚µ‚½‚¢Wordƒtƒ@ƒCƒ‹‚ª‘¶Ý‚·‚éƒtƒHƒ‹ƒ_“à‚ÌWordƒtƒ@ƒCƒ‹
-  ‚Æ“¯‚¶–¼‘O‚ÌƒtƒHƒ‹ƒ_‚ÉHTML Help ƒtƒ@ƒCƒ‹‚ª¶¬‚³‚ê‚Ü‚·B
-  ¦ƒhƒLƒ…ƒƒ“ƒg‚Ì‘å‚«‚³‚É‚æ‚Á‚Ä‚ÍA•ª’PˆÊ‚ÌŽžŠÔ‚ª‚©‚©‚é‚±‚Æ‚ª‚ ‚è‚Ü‚·B
+  ã—ã°ã‚‰ãã™ã‚‹ã¨ã€å¤‰æ›ã—ãŸã„Wordãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã™ã‚‹ãƒ•ã‚©ãƒ«ãƒ€å†…ã®Wordãƒ•ã‚¡ã‚¤ãƒ«
+  ã¨åŒã˜åå‰ã®ãƒ•ã‚©ãƒ«ãƒ€ã«HTML Help ãƒ•ã‚¡ã‚¤ãƒ«ãŒç”Ÿæˆã•ã‚Œã¾ã™ã€‚
+  â€»ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã®å¤§ãã•ã«ã‚ˆã£ã¦ã¯ã€åˆ†å˜ä½ã®æ™‚é–“ãŒã‹ã‹ã‚‹ã“ã¨ãŒã‚ã‚Šã¾ã™ã€‚
 
-EƒRƒ}ƒ“ƒhƒ‰ƒCƒ“Žw’è
+ãƒ»ã‚³ãƒžãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³æŒ‡å®š
 
-  ã‹L‚Ì•û–@‚Å‚ÍAÚ×‚ÈŽw’è(¶¬æƒtƒHƒ‹ƒ_‚â•ªŠ„‚·‚éƒhƒLƒ…ƒƒ“ƒgƒŒƒxƒ‹“™)‚ª
-  ‚Å‚«‚Ü‚¹‚ñ‚ªA‰º‹L‚Ì‚æ‚¤‚Éˆø”‚ÉŽw’è‚·‚é‚±‚Æ‚Å¶¬æƒtƒHƒ‹ƒ_‚È‚Ç‚ðŽw’è‚·‚é‚±
-  ‚Æ‚ª‚Å‚«‚Ü‚·B
+  ä¸Šè¨˜ã®æ–¹æ³•ã§ã¯ã€è©³ç´°ãªæŒ‡å®š(ç”Ÿæˆå…ˆãƒ•ã‚©ãƒ«ãƒ€ã‚„åˆ†å‰²ã™ã‚‹ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆãƒ¬ãƒ™ãƒ«ç­‰)ãŒ
+  ã§ãã¾ã›ã‚“ãŒã€ä¸‹è¨˜ã®ã‚ˆã†ã«å¼•æ•°ã«æŒ‡å®šã™ã‚‹ã“ã¨ã§ç”Ÿæˆå…ˆãƒ•ã‚©ãƒ«ãƒ€ãªã©ã‚’æŒ‡å®šã™ã‚‹ã“
+  ã¨ãŒã§ãã¾ã™ã€‚
 
-  [ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“]
-  cscript.exe doc2htmlhelp.vbs [WordƒhƒLƒ…ƒƒ“ƒgƒtƒ@ƒCƒ‹ƒpƒX] [/?] [/Title:HTML Help ƒ^ƒCƒgƒ‹] [/DestDir:HTML Help¶¬æƒtƒHƒ‹ƒ_] [/DivDocLevel:HTML•ªŠ„‚·‚éƒhƒLƒ…ƒƒ“ƒgƒŒƒxƒ‹] [/MarginLeft:¶—]”’‚Ì•]
+  [ã‚³ãƒžãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³]
+  cscript.exe doc2htmlhelp.vbs [Wordãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹] [/?] [/Title:HTML Help ã‚¿ã‚¤ãƒˆãƒ«] [/DestDir:HTML Helpç”Ÿæˆå…ˆãƒ•ã‚©ãƒ«ãƒ€] [/DivDocLevel:HTMLåˆ†å‰²ã™ã‚‹ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆãƒ¬ãƒ™ãƒ«] [/MarginLeft:å·¦ä½™ç™½ã®å¹…]
 
   /?
-		ƒwƒ‹ƒv‚ð•\Ž¦
+		ãƒ˜ãƒ«ãƒ—ã‚’è¡¨ç¤º
 
-  /Title:ƒ^ƒCƒgƒ‹
-		HTML Help‚Ìƒ^ƒCƒgƒ‹‚ðŽw’è‚µ‚Ü‚·B
-		È—ª‚³‚ê‚½ê‡AƒhƒLƒ…ƒƒ“ƒg‚ÌƒvƒƒpƒeƒB‚Ìƒ^ƒCƒgƒ‹‚ªŽg‚í‚ê‚Ü‚·B
-		‚à‚µA‚»‚ÌƒvƒƒpƒeƒB‚Ìƒ^ƒCƒgƒ‹‚ª‹ó”’‚¾‚Á‚½ê‡AWordƒhƒLƒ…ƒƒ“
-		ƒgƒtƒ@ƒCƒ‹–¼‚Æ“¯‚¶–¼Ì‚ª‚Â‚©‚í‚ê‚Ü‚·B
+  /Title:ã‚¿ã‚¤ãƒˆãƒ«
+		HTML Helpã®ã‚¿ã‚¤ãƒˆãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚
+		çœç•¥ã•ã‚ŒãŸå ´åˆã€ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã®ã‚¿ã‚¤ãƒˆãƒ«ãŒä½¿ã‚ã‚Œã¾ã™ã€‚
+		ã‚‚ã—ã€ãã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã®ã‚¿ã‚¤ãƒˆãƒ«ãŒç©ºç™½ã ã£ãŸå ´åˆã€Wordãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³
+		ãƒˆãƒ•ã‚¡ã‚¤ãƒ«åã¨åŒã˜åç§°ãŒã¤ã‹ã‚ã‚Œã¾ã™ã€‚
 
-  /DestDir:¶¬æƒtƒHƒ‹ƒ_
-		¶¬æƒtƒHƒ‹ƒ_‚ðŽw’è‚µ‚Ü‚·B
-		È—ª‚³‚ê‚½ê‡A¶¬æƒtƒHƒ‹ƒ_‚ÍAWordƒhƒLƒ…ƒƒ“ƒgƒtƒ@ƒCƒ‹
-		‚ª‘¶Ý‚·‚éƒtƒHƒ‹ƒ_“à‚Ìƒtƒ@ƒCƒ‹–¼‚Æ“¯‚¶ƒtƒHƒ‹ƒ_‚É‚È‚è‚Ü‚·B
+  /DestDir:ç”Ÿæˆå…ˆãƒ•ã‚©ãƒ«ãƒ€
+		ç”Ÿæˆå…ˆãƒ•ã‚©ãƒ«ãƒ€ã‚’æŒ‡å®šã—ã¾ã™ã€‚
+		çœç•¥ã•ã‚ŒãŸå ´åˆã€ç”Ÿæˆå…ˆãƒ•ã‚©ãƒ«ãƒ€ã¯ã€Wordãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ«
+		ãŒå­˜åœ¨ã™ã‚‹ãƒ•ã‚©ãƒ«ãƒ€å†…ã®ãƒ•ã‚¡ã‚¤ãƒ«åã¨åŒã˜ãƒ•ã‚©ãƒ«ãƒ€ã«ãªã‚Šã¾ã™ã€‚
 
-  /DivDocLevel:•ªŠ„‚·‚éƒhƒLƒ…ƒƒ“ƒgƒŒƒxƒ‹
-		•ªŠ„‚·‚éƒhƒLƒ…ƒƒ“ƒgƒŒƒxƒ‹‚ðŽw’è‚µ‚Ü‚·B
-		‚½‚Æ‚¦‚ÎA1‚ðŽw’è‚·‚é‚ÆŒ©o‚µ1‚ÌƒŒƒxƒ‹‚ÅHTMLƒtƒ@ƒCƒ‹‚ª•ªŠ„
-		‚³‚êA2‚ðŽw’è‚·‚é‚ÆŒ©o‚µ2‚ÌƒŒƒxƒ‹‚ÅHTMLƒtƒ@ƒCƒ‹‚ª•ªŠ„
-		‚³‚ê‚Ü‚·B
-		¦–ÚŽŸ‚ÌÅ‘åƒŒƒxƒ‹‚æ‚è‘å‚«‚¢’l‚ðŽw’è‚µ‚È‚¢‚Å‚­‚¾‚³‚¢B
-		È—ª‚³‚ê‚½ê‡A1‚Æ‚È‚è‚Ü‚·B
+  /DivDocLevel:åˆ†å‰²ã™ã‚‹ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆãƒ¬ãƒ™ãƒ«
+		åˆ†å‰²ã™ã‚‹ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆãƒ¬ãƒ™ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚
+		ãŸã¨ãˆã°ã€1ã‚’æŒ‡å®šã™ã‚‹ã¨è¦‹å‡ºã—1ã®ãƒ¬ãƒ™ãƒ«ã§HTMLãƒ•ã‚¡ã‚¤ãƒ«ãŒåˆ†å‰²
+		ã•ã‚Œã€2ã‚’æŒ‡å®šã™ã‚‹ã¨è¦‹å‡ºã—2ã®ãƒ¬ãƒ™ãƒ«ã§HTMLãƒ•ã‚¡ã‚¤ãƒ«ãŒåˆ†å‰²
+		ã•ã‚Œã¾ã™ã€‚
+		â€»ç›®æ¬¡ã®æœ€å¤§ãƒ¬ãƒ™ãƒ«ã‚ˆã‚Šå¤§ãã„å€¤ã‚’æŒ‡å®šã—ãªã„ã§ãã ã•ã„ã€‚
+		çœç•¥ã•ã‚ŒãŸå ´åˆã€1ã¨ãªã‚Šã¾ã™ã€‚
 
-  /MarginLeft:¶—]”’‚Ì•
-		¶—]”’‚Ì•‚ðƒsƒNƒZƒ‹’PˆÊ‚ÅŽw’è‚µ‚Ü‚·B
-		-9999‚ðŽw’è‚·‚é‚ÆŒ©o‚µ‚È‚Ç‚ª•\Ž¦”ÍˆÍ“à‚ÉŽû‚Ü‚é‚æ‚¤‚ÉŽ©“®’²®‚µ‚Ü‚·B
-		È—ª‚³‚ê‚½ê‡A-9999‚Æ‚È‚è‚Ü‚·B
+  /MarginLeft:å·¦ä½™ç™½ã®å¹…
+		å·¦ä½™ç™½ã®å¹…ã‚’ãƒ”ã‚¯ã‚»ãƒ«å˜ä½ã§æŒ‡å®šã—ã¾ã™ã€‚
+		-9999ã‚’æŒ‡å®šã™ã‚‹ã¨è¦‹å‡ºã—ãªã©ãŒè¡¨ç¤ºç¯„å›²å†…ã«åŽã¾ã‚‹ã‚ˆã†ã«è‡ªå‹•èª¿æ•´ã—ã¾ã™ã€‚
+		çœç•¥ã•ã‚ŒãŸå ´åˆã€-9999ã¨ãªã‚Šã¾ã™ã€‚
 
-  [Žw’è—á]
-  cscript c:\tools\doc2htmlhelp.vbs c:\tools\doc2htmlhelp.doc /Title:doc2htmlhelpà–¾‘ /DivDocLevel:1
+  [æŒ‡å®šä¾‹]
+  cscript c:\tools\doc2htmlhelp.vbs c:\tools\doc2htmlhelp.doc /Title:doc2htmlhelpèª¬æ˜Žæ›¸ /DivDocLevel:1
 
-[Žg—pðŒ]
-  –{ƒ\ƒtƒgƒEƒFƒA‚ÍAMITƒ‰ƒCƒZƒ“ƒX‚Å‚·B¤—p‚Å‚àƒtƒŠ[‚Å‚à‚²—˜—p‚¢‚½‚¾‚¯‚Ü‚·B
-  MITƒ‰ƒCƒZƒ“ƒX‚É‚Â‚¢‚Ä‚ÍˆÈ‰º‚ð‚²——‚­‚¾‚³‚¢B
+[ä½¿ç”¨æ¡ä»¶]
+  æœ¬ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ã¯ã€MITãƒ©ã‚¤ã‚»ãƒ³ã‚¹ã§ã™ã€‚å•†ç”¨ã§ã‚‚ãƒ•ãƒªãƒ¼ã§ã‚‚ã”åˆ©ç”¨ã„ãŸã ã‘ã¾ã™ã€‚
+  MITãƒ©ã‚¤ã‚»ãƒ³ã‚¹ã«ã¤ã„ã¦ã¯ä»¥ä¸‹ã‚’ã”è¦§ãã ã•ã„ã€‚
   http://ja.wikipedia.org/wiki/MIT_License
   http://www.opensource.org/licenses/mit-license.php
 
-[—š—ð]
-  2011-02-27 1.2 Word2010ŠÂ‹«‚ÅƒRƒ}ƒ“ƒhƒ‰ƒCƒ“ƒIƒvƒVƒ‡ƒ“‚Ì/DivDocLevel‚ðŽg—p‚µ‚½ê‡‚É
-                 ³‚µ‚­HTMLHelp‚ª¶¬‚³‚ê‚È‚¢–â‘è‚ÌC³
-  2008-05-30 1.1 HTMLƒtƒ@ƒCƒ‹‚ªUTF-8‚Åo—Í‚³‚ê‚½ê‡A–ÚŽŸ“™‚ª•¶Žš‰»‚¯‚µ‚Ä‚µ‚Ü‚¤–â‘è‚ÌC³
-  2008-05-17 1.0 ‰‰ñƒŠƒŠ[ƒX
+[å±¥æ­´]
+  2011-02-27 1.2 Word2010ç’°å¢ƒã§ã‚³ãƒžãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®/DivDocLevelã‚’ä½¿ç”¨ã—ãŸå ´åˆã«
+                 æ­£ã—ãHTMLHelpãŒç”Ÿæˆã•ã‚Œãªã„å•é¡Œã®ä¿®æ­£
+  2008-05-30 1.1 HTMLãƒ•ã‚¡ã‚¤ãƒ«ãŒUTF-8ã§å‡ºåŠ›ã•ã‚ŒãŸå ´åˆã€ç›®æ¬¡ç­‰ãŒæ–‡å­—åŒ–ã‘ã—ã¦ã—ã¾ã†å•é¡Œã®ä¿®æ­£
+  2008-05-17 1.0 åˆå›žãƒªãƒªãƒ¼ã‚¹
 
-[˜A—æ]
+[é€£çµ¡å…ˆ]
   mailto:s7taka@gmail.com
 
